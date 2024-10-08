@@ -8,4 +8,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
 
     def __str__(self):
-        return f"{self.author.username}: {self.content[:50]}..."  # Mostra o início do comentário
+        return f"{self.author.username}: {self.content[:50]}..."
+
+    class Meta:
+        ordering = ['-created_at']  # Ordena os comentários pela data de criação, mais recentes primeiro

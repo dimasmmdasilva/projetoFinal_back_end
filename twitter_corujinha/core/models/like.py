@@ -8,6 +8,7 @@ class Like(models.Model):
 
     class Meta:
         unique_together = ('tweet', 'user')  # Garante que cada curtida seja única para o par usuário-tweet
+        ordering = ['-created_at']  # Ordena os likes pelos mais recentes
 
     def __str__(self):
         return f"{self.user.username} curtiu {self.tweet.content[:50]}..."
