@@ -19,6 +19,7 @@ pyjwt = "2.9.0"
 sqlparse = "0.5.1"
 tzdata = "2024.2"
 gunicorn = "^23.0.0"
+dj-database-url = "^2.2.0"
 
 
 [build-system]
