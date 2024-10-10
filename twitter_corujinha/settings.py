@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt",
-    "core",
+    'twitter_corujinha.core',
     "corsheaders",
 ]
 
@@ -44,7 +44,7 @@ MIDDLEWARE = [
 ]
 
 # Configuração de URLs
-ROOT_URLCONF = "urls"
+ROOT_URLCONF = "twitter_corujinha.urls"
 
 # Templates
 TEMPLATES = [
@@ -64,7 +64,7 @@ TEMPLATES = [
 ]
 
 # WSGI Application
-WSGI_APPLICATION = "wsgi.application"
+WSGI_APPLICATION = "twitter_corujinha.wsgi.application"
 
 # Configuração do banco de dados PostgreSQL
 DATABASES = {
