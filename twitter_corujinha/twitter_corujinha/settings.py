@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt",
-    "core",
+    "twitter_corujinha.core",
     "corsheaders",
 ]
 
@@ -120,7 +120,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Configurações CORS
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",  # Ajuste para o domínio do seu front-end (Vue.js)
+    "http://localhost:8080",
 ]
 
 # Tipo de campo padrão para chaves primárias
