@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 from datetime import timedelta
 
+import dj_database_url
+
 # Diretório base do projeto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
