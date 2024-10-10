@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "projetofinal_back"
+name = "projetofinal-back"
 version = "0.1.0"
 description = ""
 authors = ["Dimas_Marcondes <dimasmarcondes88@gmail.com>"]
