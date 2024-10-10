@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+    command: gunicorn --workers 3 twitter_corujinha.wsgi:application
+    volumes:
+      - .:/app
+      - ./static:/app/staticfiles
+      - ./media:/app/media
+    expose:
+      - "8000"
+    environment:
+      - DJANGO_SECRET_KEY=dj4%84jf^@khj&fsdf7!flkdfs0sdSAD!$%j3
+      - DJANGO_DEBUG=False
+      - POSTGRES_DB=twitter_corujinha_db
+      - POSTGRES_USER=twitter_corujinha_db_user
+      - POSTGRES_PASSWORD=C6toTl16yBcM4R5yNoPsppZxuhvPOVfs
+      - POSTGRES_HOST=dpg-cs3cqb3qf0us73cog870-a
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./static:/app/staticfiles
+      - ./media:/app/media
+    depends_on:
+      - web

@@ -1,6 +1,6 @@
+import os
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-import os
 from django.conf import settings
 
 class User(AbstractUser):
