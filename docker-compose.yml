@@ -18,6 +18,7 @@ services:
       - POSTGRES_USER=twitter_corujinha_db_user
       - POSTGRES_PASSWORD=C6toTl16yBcM4R5yNoPsppZxuhvPOVfs
       - POSTGRES_HOST=dpg-cs3cqb3qf0us73cog870-a
+      - DATABASE_URL=postgres://twitter_corujinha_db_user:C6toTl16yBcM4R5yNoPsppZxuhvPOVfs@dpg-cs3cqb3qf0us73cog870-a/twitter_corujinha_db
 
   nginx:
     image: nginx:latest

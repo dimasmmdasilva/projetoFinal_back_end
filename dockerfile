@@ -20,6 +20,9 @@ COPY . /app/
 # Define o diretório correto onde o manage.py está localizado
 WORKDIR /app/twitter_corujinha
 
+# Adiciona o diretório do projeto ao PYTHONPATH
+ENV PYTHONPATH="/app"
+
 # Instala as dependências usando o Poetry (sem criar um ambiente virtual no container)
 RUN poetry config virtualenvs.create false && poetry install --no-dev
 

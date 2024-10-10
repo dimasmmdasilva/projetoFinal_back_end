@@ -44,7 +44,7 @@ MIDDLEWARE = [
 ]
 
 # Configuração de URLs
-ROOT_URLCONF = "twitter_corujinha.urls"
+ROOT_URLCONF = "urls"
 
 # Templates
 TEMPLATES = [
@@ -64,7 +64,7 @@ TEMPLATES = [
 ]
 
 # WSGI Application
-WSGI_APPLICATION = "twitter_corujinha.wsgi.application"
+WSGI_APPLICATION = "wsgi.application"
 
 # Configuração do banco de dados PostgreSQL
 DATABASES = {
