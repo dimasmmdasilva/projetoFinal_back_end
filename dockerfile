@@ -26,8 +26,5 @@ RUN poetry config virtualenvs.create false && poetry install --no-dev
 # Coleta os arquivos estáticos
 RUN python manage.py collectstatic --noinput
 
-# Expõe a porta 10000 para acessar o serviço Django via Gunicorn
-EXPOSE 10000
-
 # Executa as migrações e depois inicia o Gunicorn quando o container for iniciado
-CMD ["sh", "-c", "python manage.py migrate && gunicorn --workers 3 --bind 0.0.0.0:10000 twitter_corujinha.wsgi:application"]
+CMD ["sh", "-c", "python manage.py migrate && gunicorn --workers 3 --bind 0.0.0.0:$PORT twitter_corujinha.wsgi:application"]
