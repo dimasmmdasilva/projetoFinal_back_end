@@ -2,6 +2,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from django.contrib.auth.hashers import make_password  # Importa função para fazer o hash da senha
 from ..models.user import User
 from ..serializers import UserSerializer
 
@@ -15,7 +16,13 @@ class UserViewSet(viewsets.ModelViewSet):
         """
         Cria um novo usuário no sistema. Permite criação sem autenticação.
         """
-        serializer = self.get_serializer(data=request.data)
+        data = request.data.copy()
+        
+        # Verificar se o campo de senha está presente e fazer o hash da senha
+        if 'password' in data:
+            data['password'] = make_password(data['password'])
+        
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
