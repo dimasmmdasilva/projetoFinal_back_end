@@ -1,10 +1,11 @@
+from ..models.user import User
+from ..serializers import UserSerializer
 from rest_framework import viewsets, permissions, status
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.contrib.auth.hashers import make_password  # Importa função para fazer o hash da senha
-from ..models.user import User
-from ..serializers import UserSerializer
+from django.contrib.auth.hashers import make_password
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -13,19 +14,24 @@ class UserViewSet(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def create(self, request, *args, **kwargs):
-        """
-        Cria um novo usuário no sistema. Permite criação sem autenticação.
-        """
         data = request.data.copy()
         
-        # Verificar se o campo de senha está presente e fazer o hash da senha
         if 'password' in data:
             data['password'] = make_password(data['password'])
-        
+
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        # Gerar tokens de autenticação JWT
+        user = User.objects.get(username=data['username'])
+        refresh = RefreshToken.for_user(user)
+        
+        return Response({
+            'user': serializer.data,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
