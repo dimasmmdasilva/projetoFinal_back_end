@@ -8,8 +8,17 @@ from ..serializers import UserSerializer
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
+
+    def get_permissions(self):
+        """
+        Define permissões diferentes para ações específicas.
+        Permite que a criação de usuários seja feita sem autenticação,
+        mas exige autenticação para todas as outras operações.
+        """
+        if self.action == 'create':
+            return [permissions.AllowAny()]  # Permite a criação de usuários sem autenticação
+        return [permissions.IsAuthenticated()]  # Exige autenticação para as outras operações
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
