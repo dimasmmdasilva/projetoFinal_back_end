@@ -118,9 +118,10 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Configurações CORS para permitir requisições do front-end hospedado no Render
+# Configurações CORS para permitir requisições do front-end e back-end hospedados no Render
 CORS_ALLOWED_ORIGINS = [
-    "https://twitter-corujinha.onrender.com",  # URL do front-end no Render
+    "https://twitter-corujinha-web.onrender.com",
+    "https://twitter-corujinha.onrender.com",
 ]
 
 # Tipo de campo padrão para chaves primárias
