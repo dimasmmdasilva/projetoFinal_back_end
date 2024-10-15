@@ -131,6 +131,9 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
+# Garantir que o token CSRF está disponível nos templates
+CSRF_COOKIE_HTTPONLY = False
+
 # Definir URLs para redirecionamento de login e logout
 LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
