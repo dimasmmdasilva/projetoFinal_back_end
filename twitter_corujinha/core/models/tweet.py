@@ -12,7 +12,7 @@ class Tweet(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Atualizado em")
 
-    # Novo campo para respostas
+    # Novo campo para respostas (tweet pai)
     parent = models.ForeignKey(
         'self', 
         null=True, 
@@ -23,7 +23,6 @@ class Tweet(models.Model):
     )
 
     def __str__(self):
-        # Mostra que este tweet é uma resposta se ele tiver um "parent"
         if self.parent:
             return f"Reply by {self.author.username} to {self.parent.author.username}: {self.content[:50]}..."
         return f"{self.author.username}: {self.content[:50]}..."

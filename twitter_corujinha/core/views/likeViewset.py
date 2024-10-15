@@ -1,7 +1,8 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.decorators import action
+
 from ..models.like import Like
 from ..serializers import LikeSerializer
 
@@ -13,8 +14,7 @@ class LikeViewSet(viewsets.ModelViewSet):
         """
         Retorna os likes do usuário autenticado.
         """
-        user = self.request.user
-        return Like.objects.filter(user=user)
+        return Like.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         """
@@ -41,4 +41,4 @@ class LikeViewSet(viewsets.ModelViewSet):
         if like:
             like.delete()
             return Response({"message": "Curtida removida com sucesso."})
-        return Response({"message": "Você ainda não curtiu este tweet."}, status=400)
+        return Response({"message": "Você ainda não curtiu este tweet."}, status=status.HTTP_400_BAD_REQUEST)

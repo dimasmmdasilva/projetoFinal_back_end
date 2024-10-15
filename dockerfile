@@ -1,30 +1,38 @@
-# Usa uma imagem oficial do Python como base
+# Usa uma imagem oficial do Python como base, optando pela versão slim para menor tamanho
 FROM python:3.12-slim
 
-# Instala as dependências do sistema necessárias (incluindo build tools e libpq-dev para PostgreSQL)
+# Instala as dependências do sistema necessárias (build tools e libpq-dev para PostgreSQL)
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     build-essential \
-    curl
+    curl \
+    --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
-# Instala o Poetry (opcionalmente define a versão) e cria um link simbólico para garantir que o Poetry esteja no PATH
+# Instala o Poetry (especifica a versão 1.6.1) e adiciona ao PATH
 RUN curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.6.1 python3 - && \
     ln -s /root/.local/bin/poetry /usr/local/bin/poetry
 
-# Define o diretório de trabalho no container como a raiz do projeto
+# Define o diretório de trabalho como a raiz do projeto
 WORKDIR /app
 
-# Copia todos os arquivos do projeto para o diretório de trabalho
+# Copia apenas os arquivos de dependências primeiro para melhor aproveitamento de cache
+COPY pyproject.toml poetry.lock /app/
+
+# Instala as dependências do Poetry sem criar ambientes virtuais
+RUN poetry config virtualenvs.create false && poetry install --no-dev
+
+# Agora copia o restante dos arquivos do projeto
 COPY . /app/
 
-# Adiciona o diretório do projeto ao PYTHONPATH
+# Define variáveis de ambiente
 ENV PYTHONPATH="/app"
-
-# Instala as dependências usando o Poetry (sem criar um ambiente virtual no container)
-RUN poetry config virtualenvs.create false && poetry install --no-dev
+ENV PORT=8000
 
 # Coleta os arquivos estáticos
 RUN python manage.py collectstatic --noinput
 
-# Executa as migrações e depois inicia o Gunicorn quando o container for iniciado
+# Expondo a porta para o serviço
+EXPOSE $PORT
+
+# Comando padrão para rodar o container
 CMD ["sh", "-c", "python manage.py migrate && gunicorn --workers 3 --bind 0.0.0.0:$PORT twitter_corujinha.wsgi:application"]

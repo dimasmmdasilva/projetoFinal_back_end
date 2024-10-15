@@ -13,5 +13,5 @@ router.register(r'follows', FollowViewSet, basename='follow')
 # Incluindo as URLs do router no padrão urlpatterns
 urlpatterns = [
     path('', include(router.urls)),  # Todas as rotas registradas no router
-    path('users/me/', UserViewSet.as_view({'get': 'me'})),  # Rota adicional para retornar o usuário autenticado
+    path('users/me/', UserViewSet.as_view({'get': 'me'})),  # Rota para retornar dados do usuário autenticado
 ]

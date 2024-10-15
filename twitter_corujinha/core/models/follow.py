@@ -17,8 +17,8 @@ class Follow(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Seguido em")
 
     class Meta:
-        unique_together = ('follower', 'followed')  # Evita duplicatas na relação de seguimento
-        ordering = ['-created_at']  # Ordena pelas relações de seguimento mais recentes
+        unique_together = ('follower', 'followed')
+        ordering = ['-created_at']
 
     def __str__(self):
         return f"{self.follower.username} segue {self.followed.username}"

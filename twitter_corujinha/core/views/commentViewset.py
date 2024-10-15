@@ -1,5 +1,7 @@
-from django.forms import ValidationError
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
+from rest_framework.exceptions import ValidationError
+from rest_framework.response import Response
+
 from ..models.comment import Comment
 from ..serializers import CommentSerializer
 
@@ -14,20 +16,20 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """
-        Retorna os comentários associados ao tweet.
+        Retorna os comentários associados ao tweet especificado.
         """
-        tweet_id = self.request.query_params.get('tweet', None)
+        tweet_id = self.request.query_params.get('tweet')
         if tweet_id:
             return Comment.objects.filter(tweet_id=tweet_id).order_by('-created_at')
         return Comment.objects.none()
 
     def perform_create(self, serializer):
         """
-        Ao criar um comentário, associa automaticamente o autor do comentário
-        ao usuário autenticado e ao tweet associado.
+        Cria um comentário, associando o autor ao usuário autenticado e 
+        o comentário ao tweet associado.
         """
         tweet_id = self.request.data.get('tweet')
-        if tweet_id:
-            serializer.save(author=self.request.user, tweet_id=tweet_id)
-        else:
+        if not tweet_id:
             raise ValidationError("Tweet ID is required to create a comment.")
+        
+        serializer.save(author=self.request.user, tweet_id=tweet_id)

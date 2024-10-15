@@ -1,7 +1,5 @@
 import os
 from pathlib import Path
-from datetime import timedelta
-
 import dj_database_url
 
 # Diretório base do projeto
@@ -21,12 +19,11 @@ INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django.contrib.sessions",
+    "django.contrib.sessions",  # Adiciona suporte a sessões
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "rest_framework_simplejwt",
-    'twitter_corujinha.core',
+    'twitter_corujinha.core',  # Sua aplicação
     "corsheaders",
 ]
 
@@ -35,10 +32,10 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",  # Sessões ativadas
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",  # Proteção CSRF para sessões seguras
+    "django.contrib.auth.middleware.AuthenticationMiddleware",  # Autenticação baseada em sessão
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -99,17 +96,12 @@ USE_TZ = True
 # Configurações do Django Rest Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',  # Usando autenticação baseada em sessão
+        'rest_framework.authentication.BasicAuthentication',  # Caso precise de autenticação básica em endpoints REST
     ),
-}
-
-# Configurações JWT
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'AUTH_HEADER_TYPES': ('Bearer',),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # Apenas usuários autenticados podem acessar as APIs
+    ),
 }
 
 # Configurações de arquivos estáticos e de mídia para o Docker e Nginx
