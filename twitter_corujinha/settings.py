@@ -19,22 +19,21 @@ INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django.contrib.sessions",  # Adiciona suporte a sessões
+    "django.contrib.sessions",  # Suporte a sessões
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    'twitter_corujinha.core',  # Sua aplicação
-    "corsheaders",
+    'twitter_corujinha.core',  # Sua aplicação principal
+    "corsheaders",  # Habilitar CORS
 ]
 
 # Middlewares
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # Middleware para CORS
     "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",  # Sessões ativadas
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",  # Proteção CSRF para sessões seguras
+    "django.contrib.sessions.middleware.SessionMiddleware",  # Suporte a sessões
+    "django.middleware.csrf.CsrfViewMiddleware",  # Proteção CSRF
     "django.contrib.auth.middleware.AuthenticationMiddleware",  # Autenticação baseada em sessão
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -96,8 +95,8 @@ USE_TZ = True
 # Configurações do Django Rest Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',  # Usando autenticação baseada em sessão
-        'rest_framework.authentication.BasicAuthentication',  # Caso precise de autenticação básica em endpoints REST
+        'rest_framework.authentication.SessionAuthentication',  # Autenticação baseada em sessão
+        'rest_framework.authentication.BasicAuthentication',  # Autenticação básica
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',  # Apenas usuários autenticados podem acessar as APIs
@@ -111,7 +110,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Configurações CORS para permitir requisições do front-end e back-end hospedados no Render
+# Configurações CORS
 CORS_ALLOWED_ORIGINS = [
     "https://twitter-corujinha-web.onrender.com",
     "https://twitter-corujinha.onrender.com",
@@ -130,6 +129,12 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+
+# Definir URLs para redirecionamento de login e logout
+LOGIN_URL = '/login/'
+LOGOUT_URL = '/logout/'
+LOGIN_REDIRECT_URL = '/dashboard/'  # Redirecionar após login bem-sucedido
+LOGOUT_REDIRECT_URL = '/login/'  # Redirecionar após logout
 
 # Tipo de campo padrão para chaves primárias
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
