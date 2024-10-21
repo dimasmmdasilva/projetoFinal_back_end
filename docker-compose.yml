@@ -17,13 +17,13 @@ services:
     command: >
       sh -c "sleep 10 &&
       python manage.py migrate &&
-      gunicorn --workers 3 --bind 0.0.0.0:8000 twitter_corujinha.wsgi:application"
+      gunicorn --workers 3 --bind 0.0.0.0:8000 --timeout 120 twitter_corujinha.wsgi:application"
     volumes:
-      - ./:/app
+      - .:/app
       - ./static:/app/staticfiles
       - ./media:/app/media
     ports:
-      - "8000:8000"  # Mapeia o backend para o host na porta 8000
+      - "8000:8000"
     environment:
       - DJANGO_SECRET_KEY=dj4%84jf^@khj&fsdf7!flkdfs0sdSAD!$%j3
       - DJANGO_DEBUG=True

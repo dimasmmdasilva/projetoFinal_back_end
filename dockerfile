@@ -29,7 +29,7 @@ ENV PYTHONPATH="/app"
 ENV PORT=8000
 
 # Expondo a porta para o serviço
-EXPOSE $PORT
+EXPOSE 8000
 
 # Comando padrão para rodar o Gunicorn
-CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8000", "twitter_corujinha.wsgi:application"]
+CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8000", "--timeout", "120", "twitter_corujinha.wsgi:application"]
