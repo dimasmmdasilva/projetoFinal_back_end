@@ -1,24 +1,52 @@
 version: '3.8'
 
 services:
-  web:
-    build:
-      context: .
-    command: gunicorn --workers 3 twitter_corujinha.wsgi:application
+  db:
+    image: postgres:latest
     volumes:
-      - .:/app
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=twitter_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Dim4s3388***
+    networks:
+      - twitter_network
+
+  web:
+    build: .
+    command: >
+      sh -c "sleep 10 &&
+      python manage.py migrate &&
+      gunicorn --workers 3 --bind 0.0.0.0:8000 twitter_corujinha.wsgi:application"
+    volumes:
+      - ./:/app
       - ./static:/app/staticfiles
       - ./media:/app/media
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"  # Mapeia o backend para o host na porta 8000
     environment:
       - DJANGO_SECRET_KEY=dj4%84jf^@khj&fsdf7!flkdfs0sdSAD!$%j3
-      - DJANGO_DEBUG=False
-      - POSTGRES_DB=twitter_corujinha_db
-      - POSTGRES_USER=twitter_corujinha_db_user
-      - POSTGRES_PASSWORD=C6toTl16yBcM4R5yNoPsppZxuhvPOVfs
-      - POSTGRES_HOST=dpg-cs3cqb3qf0us73cog870-a
-      - DATABASE_URL=postgres://twitter_corujinha_db_user:C6toTl16yBcM4R5yNoPsppZxuhvPOVfs@dpg-cs3cqb3qf0us73cog870-a/twitter_corujinha_db
+      - DJANGO_DEBUG=True
+      - POSTGRES_DB=twitter_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Dim4s3388***
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+    depends_on:
+      - db
+    networks:
+      - twitter_network
+
+  frontend:
+    build: ../projetoFinal_front
+    ports:
+      - "8080:8080"
+    environment:
+      - VUE_APP_API_URL=http://localhost:8000
+    depends_on:
+      - web
+    networks:
+      - twitter_network
 
   nginx:
     image: nginx:latest
@@ -30,3 +58,13 @@ services:
       - ./media:/app/media
     depends_on:
       - web
+      - frontend
+    networks:
+      - twitter_network
+
+networks:
+  twitter_network:
+    driver: bridge
+
+volumes:
+  postgres_data:

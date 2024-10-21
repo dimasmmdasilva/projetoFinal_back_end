@@ -22,3 +22,5 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created_at']  # Comentários mais recentes primeiro
+        verbose_name = "Comentário"
+        verbose_name_plural = "Comentários"

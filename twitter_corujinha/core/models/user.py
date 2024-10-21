@@ -8,25 +8,33 @@ class User(AbstractUser):
     profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True, verbose_name="Imagem de Perfil")
 
     def save(self, *args, **kwargs):
-        # Pega a imagem antiga para verificar depois, evitando erros se o usuário for novo
-        try:
-            old_image = User.objects.get(id=self.id).profile_image
-        except User.DoesNotExist:
+        """
+        Sobrescreve o método save para garantir que a imagem de perfil antiga seja removida ao substituir por uma nova.
+        """
+        # Verifica se o usuário já existe e possui uma imagem antiga
+        if self.pk:
+            try:
+                old_image = User.objects.get(pk=self.pk).profile_image
+            except User.DoesNotExist:
+                old_image = None
+        else:
             old_image = None
 
         super().save(*args, **kwargs)
 
-        # Remove a imagem antiga se uma nova foi carregada e a antiga não está mais em uso
+        # Remove a imagem antiga se ela foi substituída por uma nova
         if old_image and old_image != self.profile_image:
             self.remove_old_image(old_image)
 
     def remove_old_image(self, old_image):
         """
-        Remove a imagem antiga se ela não for mais usada por nenhum outro usuário.
+        Remove a imagem antiga do sistema de arquivos se ela não estiver mais associada a este usuário.
         """
-        image_path = os.path.join(settings.MEDIA_ROOT, old_image.path)
-        if os.path.isfile(image_path):
-            os.remove(image_path)
+        if old_image and os.path.isfile(old_image.path):
+            try:
+                os.remove(old_image.path)
+            except Exception as e:
+                print(f"Erro ao remover a imagem antiga: {e}")
 
     def __str__(self):
         return self.username

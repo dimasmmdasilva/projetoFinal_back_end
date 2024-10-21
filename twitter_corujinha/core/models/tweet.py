@@ -12,14 +12,22 @@ class Tweet(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Atualizado em")
 
-    # Novo campo para respostas (tweet pai)
+    # Campo opcional para tweet resposta
     parent = models.ForeignKey(
         'self', 
         null=True, 
         blank=True, 
         on_delete=models.SET_NULL, 
-        related_name='replies',
+        related_name='replies',  # Relaciona tweets com respostas
         verbose_name="Tweet Original"
+    )
+
+    # Campo para armazenar os likes
+    likes = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="liked_tweets",  # Relaciona o tweet com os usuários que curtiram
+        blank=True,
+        verbose_name="Curtidas"
     )
 
     def __str__(self):
