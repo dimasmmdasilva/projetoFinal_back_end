@@ -24,7 +24,6 @@ class TweetViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """
         Cria um tweet ou uma resposta, associando o autor ao usuário logado.
-        Se o tweet tiver um campo 'parent', ele é tratado como uma resposta.
         """
         parent_tweet_id = self.request.data.get('parent')
         parent_tweet = Tweet.objects.filter(id=parent_tweet_id).first() if parent_tweet_id else None
@@ -53,7 +52,7 @@ class TweetViewSet(viewsets.ModelViewSet):
             return Response({"detail": "Você já curtiu este tweet."}, status=status.HTTP_400_BAD_REQUEST)
 
         tweet.likes.add(user)
-        return Response({"detail": "Tweet curtido com sucesso."}, status=status.HTTP_200_OK)
+        return Response({"detail": "Tweet curtido com sucesso.", "likes_count": tweet.likes.count()}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['post'])
     def unlike(self, request, pk=None):
@@ -67,4 +66,4 @@ class TweetViewSet(viewsets.ModelViewSet):
             return Response({"detail": "Você ainda não curtiu este tweet."}, status=status.HTTP_400_BAD_REQUEST)
 
         tweet.likes.remove(user)
-        return Response({"detail": "Curtida removida com sucesso."}, status=status.HTTP_200_OK)
+        return Response({"detail": "Curtida removida com sucesso.", "likes_count": tweet.likes.count()}, status=status.HTTP_200_OK)

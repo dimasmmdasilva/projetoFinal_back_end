@@ -18,22 +18,21 @@ class Tweet(models.Model):
         null=True, 
         blank=True, 
         on_delete=models.SET_NULL, 
-        related_name='replies',  # Relaciona tweets com respostas
+        related_name='replies',
         verbose_name="Tweet Original"
     )
 
     # Campo para armazenar os likes
     likes = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        related_name="liked_tweets",  # Relaciona o tweet com os usuários que curtiram
+        related_name="liked_tweets",
         blank=True,
         verbose_name="Curtidas"
     )
 
     def __str__(self):
-        if self.parent:
-            return f"Reply by {self.author.username} to {self.parent.author.username}: {self.content[:50]}..."
-        return f"{self.author.username}: {self.content[:50]}..."
+        prefix = "Reply to " if self.parent else ""
+        return f"{prefix}{self.author.username}: {self.content[:50]}..."
 
     class Meta:
         indexes = [

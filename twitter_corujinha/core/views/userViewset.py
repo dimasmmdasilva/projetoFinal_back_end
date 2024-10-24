@@ -7,7 +7,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from ..serializers import UserSerializer
 
 User = get_user_model()
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -17,16 +16,8 @@ class UserViewSet(viewsets.ModelViewSet):
             return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
 
-    def create(self, request, *args, **kwargs):
-        data = request.data.copy()
-        data['password'] = make_password(data['password'])
-
-        serializer = self.get_serializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"detail": "Cadastro realizado com sucesso"}, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        serializer.save(password=make_password(serializer.validated_data['password']))
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
     def login(self, request):
@@ -36,26 +27,36 @@ class UserViewSet(viewsets.ModelViewSet):
         user = authenticate(request, username=username, password=password)
         if user:
             refresh = RefreshToken.for_user(user)
-            response = Response({"message": "Login realizado com sucesso"}, status=status.HTTP_200_OK)
-            
-            # Adiciona os cookies JWT ao navegador
+            access_token = str(refresh.access_token)
+            refresh_token = str(refresh)
+
+            response = Response(
+                {
+                    "message": "Login realizado com sucesso",
+                    "access": access_token,
+                    "refresh": refresh_token
+                },
+                status=status.HTTP_200_OK
+            )
             response.set_cookie(
                 key='jwt_access',
-                value=str(refresh.access_token),
+                value=access_token,
                 httponly=True,
-                secure=False,  # Ajuste para True em produção
-                samesite='Lax'
+                secure=False,
+                samesite='Lax',
+                max_age=3600
             )
             response.set_cookie(
                 key='jwt_refresh',
-                value=str(refresh),
+                value=refresh_token,
                 httponly=True,
-                secure=False,  # Ajuste para True em produção
-                samesite='Lax'
+                secure=False,
+                samesite='Lax',
+                max_age=86400
             )
             return response
-        else:
-            return Response({"error": "Credenciais inválidas"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        return Response({"error": "Credenciais inválidas"}, status=status.HTTP_401_UNAUTHORIZED)
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def me(self, request):

@@ -19,10 +19,13 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock /app/
 
 # Instala as dependências do Poetry
-RUN poetry config virtualenvs.create false && poetry install --only main
+RUN poetry config virtualenvs.create false && poetry install --only main --no-dev
 
 # Copia o restante dos arquivos do projeto
 COPY . /app/
+
+# Cria os diretórios para arquivos estáticos e de mídia
+RUN mkdir -p /app/staticfiles /app/media
 
 # Define variáveis de ambiente
 ENV PYTHONPATH="/app"

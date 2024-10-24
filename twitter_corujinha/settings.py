@@ -1,13 +1,12 @@
 import os
 from pathlib import Path
-import dj_database_url
 from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-9-=sf=+m7tlz4^_$6iycv%xo(p6fhp+l&tly1bnhndb=ur$a^^")
 DEBUG = True  # Coloque False em produção
-ALLOWED_HOSTS = ['*']  # Ajuste em produção para incluir domínios específicos
+ALLOWED_HOSTS = ['*']  # Ajuste para incluir domínios específicos em produção
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -17,16 +16,16 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    'twitter_corujinha.core',  # Módulo principal
-    "corsheaders",  # Habilitar CORS
-    'rest_framework_simplejwt.token_blacklist',  # JWT Token Blacklist para suporte a logout
+    "corsheaders",
+    "rest_framework_simplejwt.token_blacklist",
+    "twitter_corujinha.core",  # Módulo principal da aplicação
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",  # Middleware para CORS
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",  # Proteção CSRF
+    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -56,10 +55,10 @@ WSGI_APPLICATION = "twitter_corujinha.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'twitter_db',
-        'USER': 'postgres',
-        'PASSWORD': 'Dim4s3388***',
-        'HOST': 'db',  # Para integração no Docker
+        'NAME': os.getenv('POSTGRES_DB', 'twitter_db'),
+        'USER': os.getenv('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'Dim4s3388***'),
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
@@ -73,6 +72,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
 }
 
 SIMPLE_JWT = {
@@ -80,12 +82,22 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,  # Atualiza o último login após o refresh
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_COOKIE_NAME': 'jwt_access',
-    'TOKEN_COOKIE_HTTPONLY': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
 }
 
+# Configurações de Cookies para autenticação JWT
+SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'False') == 'True'
+CSRF_COOKIE_SECURE = os.getenv('CSRF_COOKIE_SECURE', 'False') == 'True'
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+
+# Configurações de CORS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",  # Front-end local
     "http://web:8000",  # Back-end no Docker

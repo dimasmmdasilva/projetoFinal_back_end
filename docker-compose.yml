@@ -3,12 +3,13 @@ version: '3.8'
 services:
   db:
     image: postgres:latest
+    restart: always  # Reinicia automaticamente em caso de falhas
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=twitter_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=Dim4s3388***
+      POSTGRES_DB: twitter_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Dim4s3388***
     networks:
       - twitter_network
 
@@ -16,22 +17,21 @@ services:
     build: .
     command: >
       sh -c "sleep 10 &&
+      python manage.py collectstatic --noinput &&
       python manage.py migrate &&
-      gunicorn --workers 3 --bind 0.0.0.0:8000 --timeout 120 twitter_corujinha.wsgi:application"
+      gunicorn --workers 3 --bind 0.0.0.0:8000 twitter_corujinha.wsgi:application"
     volumes:
-      - .:/app
+      - ./:/app
       - ./static:/app/staticfiles
       - ./media:/app/media
-    ports:
-      - "8000:8000"
     environment:
-      - DJANGO_SECRET_KEY=dj4%84jf^@khj&fsdf7!flkdfs0sdSAD!$%j3
-      - DJANGO_DEBUG=True
-      - POSTGRES_DB=twitter_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=Dim4s3388***
-      - POSTGRES_HOST=db
-      - POSTGRES_PORT=5432
+      DJANGO_SECRET_KEY: dj4%84jf^@khj&fsdf7!flkdfs0sdSAD!$%j3
+      DJANGO_DEBUG: 'True'
+      POSTGRES_DB: twitter_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Dim4s3388***
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
     depends_on:
       - db
     networks:
@@ -40,9 +40,9 @@ services:
   frontend:
     build: ../projetoFinal_front
     ports:
-      - "8080:8080"
+      - "8080:80"  # Redireciona a porta para servir o front-end
     environment:
-      - VUE_APP_API_URL=http://localhost:8000
+      VUE_APP_API_URL: http://nginx
     depends_on:
       - web
     networks:
@@ -58,7 +58,7 @@ services:
       - ./media:/app/media
     depends_on:
       - web
-      - frontend
+    command: sh -c "nginx -g 'daemon off;'"
     networks:
       - twitter_network
 
