@@ -28,7 +28,7 @@ services:
       DJANGO_DEBUG: 'True'
       POSTGRES_DB: twitter_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Dim4s3388***
+      POSTGRES_PASSWORD: twitterclone123
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
     ports:
