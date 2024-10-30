@@ -50,7 +50,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB', 'twitter_db'),
         'USER': os.getenv('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'Dim4s3388***'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'twitterclone123'),
         'HOST': os.getenv('POSTGRES_HOST', 'db'),  # Nome do container do banco no Docker
         'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }

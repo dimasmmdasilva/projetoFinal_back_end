@@ -40,30 +40,14 @@ class TweetViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(tweets_from_followers, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['post'])
-    def like(self, request, pk=None):
+    @action(detail=True, methods=['delete'])
+    def delete(self, request, pk=None):
         """
-        Adiciona uma curtida ao tweet especificado.
-        """
-        tweet = self.get_object()
-        user = request.user
-
-        if tweet.likes.filter(id=user.id).exists():
-            return Response({"detail": "Você já curtiu este tweet."}, status=status.HTTP_400_BAD_REQUEST)
-
-        tweet.likes.add(user)
-        return Response({"detail": "Tweet curtido com sucesso.", "likes_count": tweet.likes.count()}, status=status.HTTP_200_OK)
-
-    @action(detail=True, methods=['post'])
-    def unlike(self, request, pk=None):
-        """
-        Remove uma curtida do tweet especificado.
+        Permite que o autor do tweet exclua o tweet especificado.
         """
         tweet = self.get_object()
-        user = request.user
+        if tweet.author != request.user:
+            return Response({"detail": "Você não tem permissão para excluir este tweet."}, status=status.HTTP_403_FORBIDDEN)
 
-        if not tweet.likes.filter(id=user.id).exists():
-            return Response({"detail": "Você ainda não curtiu este tweet."}, status=status.HTTP_400_BAD_REQUEST)
-
-        tweet.likes.remove(user)
-        return Response({"detail": "Curtida removida com sucesso.", "likes_count": tweet.likes.count()}, status=status.HTTP_200_OK)
+        tweet.delete()
+        return Response({"detail": "Tweet excluído com sucesso."}, status=status.HTTP_204_NO_CONTENT)

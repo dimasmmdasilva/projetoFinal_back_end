@@ -17,8 +17,8 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """
-        Retorna os comentários associados ao tweet especificado, 
-        ou todos os comentários se nenhum tweet for especificado.
+        Retorna os comentários associados ao tweet especificado ou todos os comentários
+        se nenhum tweet for especificado, ordenados do mais recente para o mais antigo.
         """
         tweet_id = self.request.query_params.get('tweet')
         if tweet_id:
@@ -28,18 +28,19 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """
         Cria um comentário, associando o autor ao usuário autenticado e 
-        o comentário ao tweet associado.
+        vinculando-o ao tweet especificado.
         """
         tweet_id = self.request.data.get('tweet')
         if not tweet_id:
-            raise ValidationError("O ID do tweet é necessário para criar um comentário.")
+            raise ValidationError({"detail": "O ID do tweet é necessário para criar um comentário."})
         
         serializer.save(author=self.request.user, tweet_id=tweet_id)
 
-    @action(detail=True, methods=['delete'])
+    @action(detail=True, methods=['delete'], url_path='delete')
     def delete_comment(self, request, pk=None):
         """
-        Ação customizada para excluir um comentário.
+        Ação customizada para excluir um comentário. Apenas o autor do comentário 
+        pode realizar essa operação.
         """
         comment = self.get_object()
         if comment.author != request.user:
@@ -47,5 +48,6 @@ class CommentViewSet(viewsets.ModelViewSet):
                 {"detail": "Você não tem permissão para excluir este comentário."},
                 status=status.HTTP_403_FORBIDDEN
             )
+
         comment.delete()
         return Response({"detail": "Comentário excluído com sucesso."}, status=status.HTTP_204_NO_CONTENT)

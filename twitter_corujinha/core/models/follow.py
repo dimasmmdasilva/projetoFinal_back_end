@@ -5,10 +5,10 @@ User = settings.AUTH_USER_MODEL
 
 class Follow(models.Model):
     follower = models.ForeignKey(
-        User, related_name='follower_relations', on_delete=models.CASCADE
+        User, related_name='following_set', on_delete=models.CASCADE
     )
     followed = models.ForeignKey(
-        User, related_name='followed_relations', on_delete=models.CASCADE
+        User, related_name='follower_set', on_delete=models.CASCADE
     )
     created_at = models.DateTimeField(auto_now_add=True)
 

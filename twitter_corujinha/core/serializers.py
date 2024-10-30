@@ -51,19 +51,39 @@ class UserSerializer(serializers.ModelSerializer):
         ]
 
     def get_followers_count(self, obj):
-        # Ajuste para contar corretamente os seguidores
         return obj.followers.count()
 
     def get_following_count(self, obj):
-        # Ajuste para contar corretamente os usuários seguidos
         return obj.following.count()
 
     def get_is_following(self, obj):
         user = self.context['request'].user
         if user.is_authenticated:
-            # Verifica se o usuário autenticado segue o usuário atual
             return obj.is_followed_by(user)
         return False
+
+    def get_profile_image_url(self, obj):
+        if obj.profile_image:
+            return settings.MEDIA_URL + obj.profile_image.name
+        return None
+
+class CurrentUserSerializer(serializers.ModelSerializer):
+    followers_count = serializers.SerializerMethodField()
+    following_count = serializers.SerializerMethodField()
+    profile_image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            'id', 'username', 'email', 'bio',
+            'profile_image_url', 'followers_count', 'following_count'
+        ]
+
+    def get_followers_count(self, obj):
+        return obj.followers.count()
+
+    def get_following_count(self, obj):
+        return obj.following.count()
 
     def get_profile_image_url(self, obj):
         if obj.profile_image:
@@ -85,7 +105,6 @@ class TweetSerializer(serializers.ModelSerializer):
 
     def get_likes_count(self, obj):
         return obj.likes.count()
-
 
 class FollowSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()

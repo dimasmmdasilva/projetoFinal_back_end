@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: twitter_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Dim4s3388***
+      POSTGRES_PASSWORD: twitterclone123
     volumes:
       - pg_data:/var/lib/postgresql/data
     networks:
