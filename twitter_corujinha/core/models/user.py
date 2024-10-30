@@ -8,7 +8,6 @@ class User(AbstractUser):
         upload_to='profile_images/', blank=True, null=True, verbose_name="Imagem de Perfil"
     )
     
-    # Relacionamento de seguir/ser seguido através do modelo Follow
     following = models.ManyToManyField(
         'self',
         through='Follow',
@@ -16,6 +15,20 @@ class User(AbstractUser):
         symmetrical=False,
         blank=True,
         verbose_name="Seguindo"
+    )
+
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='custom_user_groups',  # Evita conflitos de acesso reverso
+        blank=True,
+        verbose_name="Groups"
+    )
+    
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='custom_user_permissions',  # Evita conflitos de acesso reverso
+        blank=True,
+        verbose_name="Permissions"
     )
 
     def save(self, *args, **kwargs):

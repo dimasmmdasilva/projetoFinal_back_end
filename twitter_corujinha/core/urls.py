@@ -11,7 +11,5 @@ router.register(r'follows', FollowViewSet, basename='follow')
 
 # Incluindo as URLs do router no padrão urlpatterns
 urlpatterns = [
-    path('', include(router.urls)),  # Todas as rotas registradas no router
-    path('users/login/', UserViewSet.as_view({'post': 'login'}), name='users-login'),
-    path('users/me/', UserViewSet.as_view({'get': 'me'}), name='users-me'),
+    path('', include(router.urls)),
 ]

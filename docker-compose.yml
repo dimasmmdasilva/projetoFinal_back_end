@@ -2,23 +2,22 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:latest
-    restart: always  # Reinicia automaticamente em caso de falhas
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    image: postgres:13
     environment:
       POSTGRES_DB: twitter_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: Dim4s3388***
+    volumes:
+      - pg_data:/var/lib/postgresql/data
     networks:
       - twitter_network
 
   web:
     build: .
     command: >
-      sh -c "sleep 10 &&
-      python manage.py collectstatic --noinput &&
+      sh -c "python manage.py makemigrations &&
       python manage.py migrate &&
+      python manage.py collectstatic --noinput &&
       gunicorn --workers 3 --bind 0.0.0.0:8000 twitter_corujinha.wsgi:application"
     volumes:
       - ./:/app
@@ -32,19 +31,19 @@ services:
       POSTGRES_PASSWORD: Dim4s3388***
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
-    depends_on:
-      - db
+    ports:
+      - "8000:8000"
     networks:
       - twitter_network
+    depends_on:
+      - db
 
   frontend:
     build: ../projetoFinal_front
-    ports:
-      - "8080:80"  # Redireciona a porta para servir o front-end
     environment:
-      VUE_APP_API_URL: http://nginx
-    depends_on:
-      - web
+      VUE_APP_API_URL: http://localhost:8000/api/
+    ports:
+      - "8080:80"
     networks:
       - twitter_network
 
@@ -58,13 +57,14 @@ services:
       - ./media:/app/media
     depends_on:
       - web
+      - frontend
     command: sh -c "nginx -g 'daemon off;'"
     networks:
       - twitter_network
 
+volumes:
+  pg_data:
+
 networks:
   twitter_network:
     driver: bridge
-
-volumes:
-  postgres_data:
