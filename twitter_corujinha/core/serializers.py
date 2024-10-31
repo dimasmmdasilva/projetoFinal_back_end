@@ -64,7 +64,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_profile_image_url(self, obj):
         if obj.profile_image:
-            return settings.MEDIA_URL + obj.profile_image.name
+            return f"{settings.MEDIA_URL}{obj.profile_image.name}"
         return None
 
 class CurrentUserSerializer(serializers.ModelSerializer):
@@ -75,8 +75,8 @@ class CurrentUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id', 'username', 'email', 'bio',
-            'profile_image_url', 'followers_count', 'following_count'
+            'id', 'username', 'bio', 'profile_image_url',
+            'followers_count', 'following_count'
         ]
 
     def get_followers_count(self, obj):
@@ -87,24 +87,20 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
     def get_profile_image_url(self, obj):
         if obj.profile_image:
-            return settings.MEDIA_URL + obj.profile_image.name
+            return f"{settings.MEDIA_URL}{obj.profile_image.name}"
         return None
 
 class TweetSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     author = serializers.ReadOnlyField(source='author.username')
     comments = CommentSerializer(many=True, read_only=True)
-    likes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Tweet
         fields = [
             'id', 'content', 'author', 'created_at', 'updated_at',
-            'comments', 'likes_count'
+            'comments'
         ]
-
-    def get_likes_count(self, obj):
-        return obj.likes.count()
 
 class FollowSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()

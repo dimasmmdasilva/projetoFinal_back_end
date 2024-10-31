@@ -22,14 +22,6 @@ class Tweet(models.Model):
         verbose_name="Tweet Original"
     )
 
-    # Campo para armazenar os likes
-    likes = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        related_name="liked_tweets",
-        blank=True,
-        verbose_name="Curtidas"
-    )
-
     def __str__(self):
         prefix = "Reply to " if self.parent else ""
         return f"{prefix}{self.author.username}: {self.content[:50]}..."

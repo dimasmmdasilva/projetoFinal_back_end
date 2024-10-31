@@ -33,7 +33,7 @@ class TweetViewSet(viewsets.ModelViewSet):
     def followers(self, request):
         """
         Retorna os tweets dos usuários que o usuário logado segue,
-        ordenados pela data de criação.
+        ordenados pela data de criação mais recente.
         """
         following_ids = request.user.following.values_list('followed_id', flat=True)
         tweets_from_followers = Tweet.objects.filter(author__in=following_ids).order_by('-created_at')
