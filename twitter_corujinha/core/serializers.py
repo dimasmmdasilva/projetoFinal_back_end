@@ -16,7 +16,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if data['password'] != data['confirm_password']:
             raise serializers.ValidationError({"password": "As senhas não coincidem."})
-        
+
         password_validation.validate_password(data['password'])
         return data
 
@@ -27,7 +27,6 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
-
 class CommentSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     author = serializers.ReadOnlyField(source='author.username')
