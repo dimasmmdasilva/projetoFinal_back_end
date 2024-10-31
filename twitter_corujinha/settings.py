@@ -14,6 +14,9 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 # Hosts permitidos
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
+# Configuração do modelo de usuário personalizado
+AUTH_USER_MODEL = 'core.User'  # Certifique-se de que este campo aponte corretamente para o modelo de usuário
+
 # Aplicações instaladas
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -25,7 +28,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "rest_framework_simplejwt.token_blacklist",
-    "twitter_corujinha.core",
+    "twitter_corujinha.core",  # Certifique-se de que o nome do app está correto
 ]
 
 # Middlewares
@@ -61,7 +64,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,  # Certifica-se de que os templates de apps serão encontrados
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
