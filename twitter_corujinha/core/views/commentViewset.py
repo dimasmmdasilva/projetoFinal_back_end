@@ -1,7 +1,6 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
-from rest_framework.decorators import action
 
 from ..models.comment import Comment
 from ..serializers import CommentSerializer
@@ -33,14 +32,13 @@ class CommentViewSet(viewsets.ModelViewSet):
         tweet_id = self.request.data.get('tweet')
         if not tweet_id:
             raise ValidationError({"detail": "O ID do tweet é necessário para criar um comentário."})
-        
+
         serializer.save(author=self.request.user, tweet_id=tweet_id)
 
-    @action(detail=True, methods=['delete'], url_path='delete')
-    def delete_comment(self, request, pk=None):
+    def destroy(self, request, *args, **kwargs):
         """
-        Ação customizada para excluir um comentário. Apenas o autor do comentário 
-        pode realizar essa operação.
+        Sobrescreve o método de destruição para garantir que apenas o autor
+        do comentário possa excluir o comentário.
         """
         comment = self.get_object()
         if comment.author != request.user:
@@ -48,6 +46,5 @@ class CommentViewSet(viewsets.ModelViewSet):
                 {"detail": "Você não tem permissão para excluir este comentário."},
                 status=status.HTTP_403_FORBIDDEN
             )
-
-        comment.delete()
-        return Response({"detail": "Comentário excluído com sucesso."}, status=status.HTTP_204_NO_CONTENT)
+        
+        return super().destroy(request, *args, **kwargs)

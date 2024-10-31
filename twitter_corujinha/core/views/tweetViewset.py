@@ -18,7 +18,8 @@ class TweetViewSet(viewsets.ModelViewSet):
         ordenados pela data de criação mais recente.
         """
         user = self.request.user
-        following_ids = user.following.values_list('followed_id', flat=True)
+        # Corrigido para acessar o ID diretamente dos usuários seguidos
+        following_ids = user.following.values_list('id', flat=True)
         return Tweet.objects.filter(author__in=[user.id, *following_ids]).order_by('-created_at')
 
     def perform_create(self, serializer):
@@ -35,7 +36,8 @@ class TweetViewSet(viewsets.ModelViewSet):
         Retorna os tweets dos usuários que o usuário logado segue,
         ordenados pela data de criação mais recente.
         """
-        following_ids = request.user.following.values_list('followed_id', flat=True)
+        # Ajustado para acessar o ID diretamente dos usuários seguidos
+        following_ids = request.user.following.values_list('id', flat=True)
         tweets_from_followers = Tweet.objects.filter(author__in=following_ids).order_by('-created_at')
         serializer = self.get_serializer(tweets_from_followers, many=True)
         return Response(serializer.data)
