@@ -14,9 +14,8 @@ class User(AbstractUser):
     following = models.ManyToManyField(
         'self',
         through='core.Follow',  # Relacionamento intermediário usando Follow
-        related_name='followers',
+        related_name='followers',  # Usuários que seguem este usuário
         symmetrical=False,
-        blank=True,
         verbose_name="Seguindo"
     )
 
@@ -34,22 +33,15 @@ class User(AbstractUser):
 # Sinal para gerenciamento de imagem de perfil
 @receiver(pre_save, sender=User)
 def handle_profile_image_change(sender, instance, **kwargs):
-    """
-    Antes de salvar, verifica se o usuário já existe e se a imagem de perfil foi alterada.
-    Remove a imagem antiga se uma nova imagem for carregada.
-    """
     if instance.pk:
         try:
             old_user = User.objects.get(pk=instance.pk)
             if old_user.profile_image and old_user.profile_image != instance.profile_image:
                 old_user.profile_image.delete(save=False)
         except User.DoesNotExist:
-            pass  # Caso o usuário seja novo, não há imagem antiga a ser removida
+            pass
 
 @receiver(post_delete, sender=User)
 def delete_profile_image_on_user_delete(sender, instance, **kwargs):
-    """
-    Remove a imagem de perfil do sistema de arquivos quando o usuário é excluído.
-    """
     if instance.profile_image:
         instance.profile_image.delete(save=False)

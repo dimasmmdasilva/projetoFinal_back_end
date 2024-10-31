@@ -51,7 +51,7 @@ class FollowViewSet(viewsets.ViewSet):
         """
         Retorna uma lista de usuários que o usuário autenticado está seguindo.
         """
-        following_users = request.user.following.all()
+        following_users = request.user.following_set.all()  # Atualizado para o novo `related_name`
         serializer = UserSerializer(following_users, many=True)
         return Response(serializer.data)
 
@@ -60,6 +60,6 @@ class FollowViewSet(viewsets.ViewSet):
         """
         Retorna uma lista de usuários que seguem o usuário autenticado.
         """
-        followers = request.user.followers.all()
+        followers = request.user.follower_set.all()  # Atualizado para o novo `related_name`
         serializer = UserSerializer(followers, many=True)
         return Response(serializer.data)

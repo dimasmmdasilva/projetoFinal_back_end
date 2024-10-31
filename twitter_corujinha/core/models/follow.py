@@ -4,16 +4,19 @@ from django.conf import settings
 User = settings.AUTH_USER_MODEL
 
 class Follow(models.Model):
-    """
-    Modelo para representar o relacionamento de seguidores e seguidos entre usuários.
-    """
     follower = models.ForeignKey(
-        User, related_name='following', on_delete=models.CASCADE, verbose_name="Seguidor"
+        User,
+        related_name='following_set',  # Usuário que segue outros
+        related_query_name='follower',
+        on_delete=models.CASCADE
     )
     followed = models.ForeignKey(
-        User, related_name='followers', on_delete=models.CASCADE, verbose_name="Seguido"
+        User,
+        related_name='follower_set',  # Usuário que é seguido por outros
+        related_query_name='followed',
+        on_delete=models.CASCADE
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('follower', 'followed')
