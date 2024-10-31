@@ -18,9 +18,12 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
 
     def __str__(self):
-        return f"{self.author.username}: {self.content[:50]}..."
+        return f"Comentário de {self.author.username} no Tweet {self.tweet.id}: {self.content[:50]}..."
 
     class Meta:
         ordering = ['-created_at']  # Comentários mais recentes primeiro
+        indexes = [
+            models.Index(fields=['created_at']),  # Índice para otimizar a ordenação por data de criação
+        ]
         verbose_name = "Comentário"
         verbose_name_plural = "Comentários"
