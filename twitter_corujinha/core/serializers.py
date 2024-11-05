@@ -27,6 +27,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+
 class CommentSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     author = serializers.ReadOnlyField(source='author.username')
@@ -56,10 +57,9 @@ class UserSerializer(serializers.ModelSerializer):
         return obj.following.count()
 
     def get_is_following(self, obj):
-        user = self.context['request'].user
-        if user.is_authenticated:
-            return obj.is_followed_by(user)
-        return False
+        # Passa o contexto da requisição para permitir acesso ao usuário autenticado
+        user = self.context.get('request').user if self.context.get('request') else None
+        return obj.is_followed_by(user) if user and user.is_authenticated else False
 
     def get_profile_image_url(self, obj):
         if obj.profile_image:

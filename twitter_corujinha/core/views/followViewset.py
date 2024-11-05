@@ -25,8 +25,11 @@ class FollowViewSet(viewsets.ViewSet):
         if Follow.objects.filter(follower=request.user, followed=followed_user).exists():
             return Response({"detail": "Você já está seguindo este usuário."}, status=status.HTTP_400_BAD_REQUEST)
 
-        Follow.objects.create(follower=request.user, followed=followed_user)
-        return Response({"detail": f"Agora você está seguindo {followed_user.username}.", "is_following": True}, status=status.HTTP_200_OK)
+        try:
+            Follow.objects.create(follower=request.user, followed=followed_user)
+            return Response({"detail": f"Agora você está seguindo {followed_user.username}.", "is_following": True}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"detail": f"Ocorreu um erro: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=True, methods=['post'])
     def unfollow_user(self, request, pk=None):

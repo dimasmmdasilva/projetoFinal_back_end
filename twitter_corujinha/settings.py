@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "rest_framework_simplejwt.token_blacklist",
-    "twitter_corujinha.core",  # Certifique-se de que o nome do app está correto
+    "twitter_corujinha.core",
 ]
 
 # Middlewares
