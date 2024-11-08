@@ -16,7 +16,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'create':
-            return [permissions.AllowAny()]  # Permitir cadastro de novos usuários sem autenticação
+            return [permissions.AllowAny()]
         elif self.action in ['me', 'update_bio', 'update_profile_image']:
             return [permissions.IsAuthenticated()]
         return super().get_permissions()
@@ -26,8 +26,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
-        # Retorna os dados do usuário autenticado
-        serializer = self.get_serializer(request.user)
+        serializer = self.get_serializer(request.user, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['patch'], permission_classes=[permissions.IsAuthenticated])
@@ -40,6 +39,11 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['patch'], permission_classes=[permissions.IsAuthenticated])
     def update_profile_image(self, request):
         user = request.user
-        user.profile_image = request.FILES.get('profile_image')
-        user.save()
-        return Response({'success': 'Imagem de perfil atualizada com sucesso'}, status=status.HTTP_200_OK)
+        profile_image = request.FILES.get('profile_image')
+        if profile_image:
+            user.profile_image = profile_image
+            user.save()
+            # Retorna a URL completa da imagem
+            profile_image_url = request.build_absolute_uri(user.profile_image.url)
+            return Response({'profile_image_url': profile_image_url}, status=status.HTTP_200_OK)
+        return Response({'detail': 'Imagem não fornecida'}, status=status.HTTP_400_BAD_REQUEST)

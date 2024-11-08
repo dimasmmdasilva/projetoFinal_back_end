@@ -63,7 +63,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_profile_image_url(self, obj):
         if obj.profile_image:
-            return f"{settings.MEDIA_URL}{obj.profile_image.name}"
+            request = self.context.get('request')
+            return request.build_absolute_uri(obj.profile_image.url) if request else None
         return None
 
 class CurrentUserSerializer(serializers.ModelSerializer):
@@ -86,7 +87,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
     def get_profile_image_url(self, obj):
         if obj.profile_image:
-            return f"{settings.MEDIA_URL}{obj.profile_image.name}"
+            return self.context['request'].build_absolute_uri(obj.profile_image.url)
         return None
 
 class TweetSerializer(serializers.ModelSerializer):

@@ -18,7 +18,6 @@ class TweetViewSet(viewsets.ModelViewSet):
         ordenados pela data de criação mais recente.
         """
         user = self.request.user
-        # Corrigido para acessar o ID diretamente dos usuários seguidos
         following_ids = user.following.values_list('id', flat=True)
         return Tweet.objects.filter(author__in=[user.id, *following_ids]).order_by('-created_at')
 
@@ -36,20 +35,23 @@ class TweetViewSet(viewsets.ModelViewSet):
         Retorna os tweets dos usuários que o usuário logado segue,
         ordenados pela data de criação mais recente.
         """
-        # Ajustado para acessar o ID diretamente dos usuários seguidos
         following_ids = request.user.following.values_list('id', flat=True)
         tweets_from_followers = Tweet.objects.filter(author__in=following_ids).order_by('-created_at')
         serializer = self.get_serializer(tweets_from_followers, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['delete'])
-    def delete(self, request, pk=None):
+    def destroy(self, request, *args, **kwargs):
         """
         Permite que o autor do tweet exclua o tweet especificado.
+        Sobrescreve o método padrão `destroy` para checar as permissões.
         """
         tweet = self.get_object()
         if tweet.author != request.user:
-            return Response({"detail": "Você não tem permissão para excluir este tweet."}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"detail": "Você não tem permissão para excluir este tweet."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
-        tweet.delete()
+        # Caso o usuário seja o autor, realiza a exclusão
+        self.perform_destroy(tweet)
         return Response({"detail": "Tweet excluído com sucesso."}, status=status.HTTP_204_NO_CONTENT)

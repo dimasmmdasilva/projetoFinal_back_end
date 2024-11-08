@@ -7,16 +7,10 @@ from ..models.follow import Follow
 from ..serializers import UserSerializer
 
 class FollowViewSet(viewsets.ViewSet):
-    """
-    ViewSet para gerenciar as ações de seguir e deixar de seguir usuários.
-    """
     permission_classes = [permissions.IsAuthenticated]
 
     @action(detail=True, methods=['post'])
     def follow_user(self, request, pk=None):
-        """
-        Permite que o usuário autenticado siga outro usuário.
-        """
         followed_user = get_object_or_404(User, pk=pk)
 
         if request.user == followed_user:
@@ -33,9 +27,6 @@ class FollowViewSet(viewsets.ViewSet):
 
     @action(detail=True, methods=['post'])
     def unfollow_user(self, request, pk=None):
-        """
-        Permite que o usuário autenticado deixe de seguir outro usuário.
-        """
         followed_user = get_object_or_404(User, pk=pk)
 
         if request.user == followed_user:
@@ -51,18 +42,12 @@ class FollowViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['get'])
     def following(self, request):
-        """
-        Retorna uma lista de usuários que o usuário autenticado está seguindo.
-        """
-        following_users = request.user.following_set.all()  # Atualizado para o novo `related_name`
+        following_users = request.user.following_set.all()
         serializer = UserSerializer(following_users, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
     def followers(self, request):
-        """
-        Retorna uma lista de usuários que seguem o usuário autenticado.
-        """
-        followers = request.user.follower_set.all()  # Atualizado para o novo `related_name`
+        followers = request.user.follower_set.all()
         serializer = UserSerializer(followers, many=True)
         return Response(serializer.data)
