@@ -5,7 +5,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('twitter_corujinha.core.urls')),  # Inclui todas as rotas definidas no core.urls
+    path('api/', include('twitter_corujinha.core.urls')),
 ]
 
 # Serve arquivos de mídia tanto em desenvolvimento quanto em produção (Render)
