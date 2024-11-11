@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 from datetime import timedelta
 
+import dj_database_url
+
 # Diretório base do projeto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -49,14 +51,7 @@ ROOT_URLCONF = "twitter_corujinha.urls"
 
 # Banco de dados
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'twitter_db'),
-        'USER': os.getenv('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'twitterclone123'),
-        'HOST': os.getenv('POSTGRES_HOST', 'db'),  # Nome do container do banco no Docker
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),
-    }
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
 
 # Configuração de templates
@@ -100,7 +95,9 @@ SIMPLE_JWT = {
 }
 
 # Configuração de CORS
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:8080,http://localhost:8000').split(',')
+CORS_ALLOWED_ORIGINS = [
+    "https://projetofinal-front-end.onrender.com",
+]
 CORS_ALLOW_CREDENTIALS = True
 
 # Configuração de arquivos estáticos e de mídia
