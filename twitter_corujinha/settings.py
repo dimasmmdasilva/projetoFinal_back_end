@@ -17,7 +17,7 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 # Configuração do modelo de usuário personalizado
-AUTH_USER_MODEL = 'core.User'  # Certifique-se de que este campo aponte corretamente para o modelo de usuário
+AUTH_USER_MODEL = 'core.User'
 
 # Aplicações instaladas
 INSTALLED_APPS = [
