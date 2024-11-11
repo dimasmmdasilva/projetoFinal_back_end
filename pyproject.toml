@@ -6,7 +6,7 @@ authors = ["Dimas_Marcondes <dimasmarcondes88@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.11.10"
+python = "^3.12"
 asgiref = "3.8.1"
 django = "5.1.1"
 django-cors-headers = "4.4.0"
