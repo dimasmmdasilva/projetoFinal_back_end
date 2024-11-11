@@ -40,10 +40,13 @@ class UserViewSet(viewsets.ModelViewSet):
     def update_profile_image(self, request):
         user = request.user
         profile_image = request.FILES.get('profile_image')
+        
         if profile_image:
             user.profile_image = profile_image
             user.save()
+            
             # Retorna a URL completa da imagem
             profile_image_url = request.build_absolute_uri(user.profile_image.url)
             return Response({'profile_image_url': profile_image_url}, status=status.HTTP_200_OK)
+        
         return Response({'detail': 'Imagem não fornecida'}, status=status.HTTP_400_BAD_REQUEST)
