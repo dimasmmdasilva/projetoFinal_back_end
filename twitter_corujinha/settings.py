@@ -99,6 +99,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://projetofinal-front-end.onrender.com",
 ]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Configuração de arquivos estáticos e de mídia
 STATIC_URL = '/static/'
