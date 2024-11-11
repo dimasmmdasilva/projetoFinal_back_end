@@ -33,4 +33,4 @@ ENV PORT=8000
 EXPOSE 8000
 
 # Comando para iniciar a aplicação com Gunicorn
-CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8000", "--timeout", "120", "twitter_corujinha.wsgi:application"]
+CMD ["sh", "-c", "python manage.py migrate && gunicorn --workers 3 --bind 0.0.0.0:8000 --timeout 120 twitter_corujinha.wsgi:application"]
