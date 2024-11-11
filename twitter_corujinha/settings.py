@@ -101,6 +101,12 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 
+CORS_ALLOW_HEADERS = [
+    'Authorization',
+    'Content-Type',
+    'X-Requested-With',
+]
+
 # Configuração de arquivos estáticos e de mídia
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
