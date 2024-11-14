@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-9-=sf=+m7tlz4^_$6iy
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 # Hosts permitidos
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = ['dimasmmdasilva.mysql.pythonanywhere-services.com']
 
 # Configuração do modelo de usuário personalizado
 AUTH_USER_MODEL = 'core.User'
@@ -53,11 +53,11 @@ ROOT_URLCONF = "twitter_corujinha.urls"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dimasmmdasilva$projetofinaltwitter',  # Nome do banco de dados que você criou
-        'USER': 'dimasmmdasilva',                       # Seu nome de usuário no PythonAnywhere
-        'PASSWORD': 'projetofinal0001',             # Substitua pela senha do banco
-        'HOST': 'dimasmmdasilva.mysql.pythonanywhere-services.com',  # Host do banco de dados
-        'PORT': '3306',                                 # Porta padrão do MySQL
+        'NAME': 'dimasmmdasilva$projetofinaltwitter',  
+        'USER': 'dimasmmdasilva',
+        'PASSWORD': 'projetofinal0001',
+        'HOST': 'dimasmmdasilva.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
     }
 }
 
@@ -103,9 +103,6 @@ SIMPLE_JWT = {
 }
 
 # Configuração de CORS
-CORS_ALLOWED_ORIGINS = [
-    "https://projetofinal-front-end.onrender.com",
-]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 
