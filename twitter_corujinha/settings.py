@@ -2,8 +2,6 @@ import os
 from pathlib import Path
 from datetime import timedelta
 
-import dj_database_url
-
 # Diretório base do projeto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -14,7 +12,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-9-=sf=+m7tlz4^_$6iy
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 # Hosts permitidos
-ALLOWED_HOSTS = ['dimasmmdasilva.mysql.pythonanywhere-services.com']
+ALLOWED_HOSTS = ['dimasmmdasilva.pythonanywhere.com']
 
 # Configuração do modelo de usuário personalizado
 AUTH_USER_MODEL = 'core.User'
