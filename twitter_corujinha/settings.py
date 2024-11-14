@@ -51,8 +51,16 @@ ROOT_URLCONF = "twitter_corujinha.urls"
 
 # Banco de dados
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'dimasmmdasilva$projetofinaltwitter',  # Nome do banco de dados que você criou
+        'USER': 'dimasmmdasilva',                       # Seu nome de usuário no PythonAnywhere
+        'PASSWORD': 'projetofinal0001',             # Substitua pela senha do banco
+        'HOST': 'dimasmmdasilva.mysql.pythonanywhere-services.com',  # Host do banco de dados
+        'PORT': '3306',                                 # Porta padrão do MySQL
+    }
 }
+
 
 # Configuração de templates
 TEMPLATES = [
