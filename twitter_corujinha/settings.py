@@ -104,8 +104,10 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     'https://projeto-final-ebac-umber.vercel.app',
 ]
+CSRF_TRUSTED_ORIGINS = [
+    'https://projeto-final-ebac-umber.vercel.app',
+]
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_HEADERS = [
     'Authorization',
